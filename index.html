@@ -449,34 +449,66 @@
   /* ---------- TEAM ---------- */
   .team-grid{
     display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:1px;
-    background:var(--line);
-    border:1px solid var(--line);
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
   }
-  .team-card{background:var(--bg); padding:36px 32px;}
+  
+  .team-card{
+    background:var(--bg);
+    border:1px solid var(--line);
+    padding:12px 12px 24px;
+    transition:border-color 0.2s ease, transform 0.2s ease;
+  }
+  
+  .team-card:hover{
+    border-color:var(--line-strong);
+    transform:translateY(-3px);
+  }
+  
+  .team-photo{
+    width:100%;
+    aspect-ratio:4/5;
+    object-fit:cover;
+    display:block;
+    background:var(--bg-panel-2);
+    filter:saturate(0.85);
+  }
+  
+  .team-info{
+    padding:20px 10px 0;
+  }
+  
   .team-name{
     font-family:'Fraunces', serif;
     font-size:1.5rem;
     color:var(--ink);
+    margin:0;
   }
+  
   .team-role{
     font-family:'IBM Plex Mono', monospace;
-    font-size:0.7rem;
+    font-size:0.68rem;
     letter-spacing:0.08em;
     text-transform:uppercase;
     color:var(--accent);
-    margin:6px 0 18px;
+    margin-top:6px;
   }
-  .team-card ul{margin:0; padding:0; list-style:none;}
-  .team-card li{
-    font-size:0.9rem;
+  
+  .team-label{
+    font-size:0.86rem;
     color:var(--ink-dim);
-    padding:9px 0;
-    border-top:1px solid var(--line);
+    margin-top:12px;
+    line-height:1.5;
   }
-  .team-card li:first-of-type{border-top:none;}
-  @media (max-width:760px){.team-grid{grid-template-columns:1fr;}}
+  
+  @media (max-width:760px){
+    .team-grid{
+      grid-template-columns:1fr;
+      max-width:420px;
+      margin:0 auto;
+    }
+  }
+
 
   /* ---------- CTA / CONTACT ---------- */
   .cta-section{
@@ -721,28 +753,59 @@
         <h2>A technical team that moved into governance.</h2>
       </div>
       <div class="team-grid reveal">
+      
+        <!-- TEAM MEMBER 1 -->
         <div class="team-card">
-          <div class="team-name">Kamya</div>
-          <div class="team-role">Co-founder</div>
-          <ul>
-            <li>CS / Engineering background, hands-on coding across multiple technical projects</li>
-            <li>Cross-functional AI Risk &amp; Governance role at a global bank — spanning Model Risk, Cyber, Fraud, Compliance, Legal, Cloud and Data Governance</li>
-            <li>Final arbiter across risk horizontals, with override authority on AI risk assessments</li>
-            <li>7–8 published technical papers, including Springer Nature</li>
-          </ul>
+          <img
+            src="images/kamya.jpg"
+            alt="Kamya — Co-founder"
+            class="team-photo"
+          >
+      
+          <div class="team-info">
+            <div class="team-name">Kamya</div>
+            <div class="team-role">Co-founder</div>
+            <div class="team-label">
+              AI Risk &amp; Governance · Engineering
+            </div>
+          </div>
         </div>
+      
+        <!-- TEAM MEMBER 2 -->
         <div class="team-card">
-          <div class="team-name">Trisha</div>
-          <div class="team-role">Co-founder</div>
-          <ul>
-            <li>CS / Engineering background; 8 years spanning hands-on coding and data science</li>
-            <li>VP at Barclays UK — Head of AI Innovation Strategy &amp; Governance for Private Banking &amp; Wealth Management</li>
-            <li>Extensively published researcher</li>
-            <li>Brings the client-facing wealth / private-banking angle, complementing cross-horizontal risk arbitration</li>
-          </ul>
+          <img
+            src="images/trisha.jpg"
+            alt="Trisha — Co-founder"
+            class="team-photo"
+          >
+      
+          <div class="team-info">
+            <div class="team-name">Trisha</div>
+            <div class="team-role">Co-founder</div>
+            <div class="team-label">
+              AI Strategy &amp; Governance · Data Science
+            </div>
+          </div>
+        </div>
+      
+        <!-- TEAM MEMBER 3 -->
+        <div class="team-card">
+          <img
+            src="images/third-member.jpg"
+            alt="Third co-founder"
+            class="team-photo"
+          >
+      
+          <div class="team-info">
+            <div class="team-name">Name</div>
+            <div class="team-role">Co-founder</div>
+            <div class="team-label">
+              Your short label here
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
   </section>
 
   <!-- CTA -->

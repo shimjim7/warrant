@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Warrant — The authority record for autonomous AI agents</title>
+<meta name="description" content="Warrant reconstructs every AI agent trajectory against the authority it was actually granted — and makes that provable to a regulator.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #14161a;
+    --bg-panel: #1b1e24;
+    --bg-panel-2: #20242b;
+    --ink: #edeae0;
+    --ink-dim: #9aa0aa;
+    --ink-faint: #666c76;
+    --accent: #c89b3c;
+    --accent-soft: #8a6b2a;
+    --line: rgba(237,234,224,0.10);
+    --line-strong: rgba(237,234,224,0.18);
+    --ok: #5c8a6f;
+    --danger: #b5544a;
+    --max: 1120px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter', -apple-system, sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent); color:#14161a;}
+
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    line-height:1.08;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:flex;
+    align-items:center;
+    gap:0.6em;
+  }
+  .eyebrow::before{
+    content:"";
+    width:14px;
+    height:1px;
+    background:var(--accent);
+    display:inline-block;
+  }
+  p{color:var(--ink-dim); margin:0;}
+  a{color:inherit;}
+  .container{max-width:var(--max); margin:0 auto; padding:0 32px;}
+  section{position:relative;}
+
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(20,22,26,0.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    max-width:var(--max); margin:0 auto; padding:18px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family:'Fraunces', serif;
+    font-size:1.15rem;
+    font-weight:600;
+    letter-spacing:0.02em;
+    text-decoration:none;
+    color:var(--ink);
+    display:flex; align-items:center; gap:9px;
+  }
+  .logo .mark{
+    width:9px; height:9px; border:1px solid var(--accent);
+    transform:rotate(45deg);
+    display:inline-block;
+  }
+  .nav-links{display:flex; gap:34px; align-items:center;}
+  .nav-links a{
+    font-size:0.86rem; color:var(--ink-dim); text-decoration:none;
+    transition:color 0.15s ease;
+  }
+  .nav-links a:hover{color:var(--ink);}
+  .nav-cta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.76rem;
+    color:var(--bg) !important;
+    background:var(--accent);
+    padding:9px 16px;
+    border-radius:2px;
+    text-decoration:none;
+    letter-spacing:0.02em;
+    transition:background 0.15s ease;
+  }
+  .nav-cta:hover{background:#dcab48;}
+  .nav-mobile-hide{display:flex;}
+  @media (max-width:760px){
+    .nav-mobile-hide .nav-only{display:none;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    padding:172px 0 96px;
+    overflow:hidden;
+  }
+  .hero .container{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:64px;
+    align-items:center;
+  }
+  .hero h1{
+    font-size:clamp(2.6rem, 4.6vw, 3.85rem);
+    margin:22px 0 26px;
+    color:var(--ink);
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--accent);
+  }
+  .hero p.lede{
+    font-size:1.12rem;
+    color:var(--ink-dim);
+    max-width:46ch;
+    margin-bottom:38px;
+  }
+  .hero-ctas{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-primary{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    background:var(--accent);
+    color:var(--bg);
+    padding:14px 24px;
+    text-decoration:none;
+    border-radius:2px;
+    letter-spacing:0.02em;
+    transition:background 0.15s ease, transform 0.15s ease;
+    display:inline-block;
+  }
+  .btn-primary:hover{background:#dcab48; transform:translateY(-1px);}
+  .btn-ghost{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    color:var(--ink);
+    padding:14px 22px;
+    text-decoration:none;
+    border:1px solid var(--line-strong);
+    border-radius:2px;
+    transition:border-color 0.15s ease, color 0.15s ease;
+    display:inline-block;
+  }
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent);}
+
+  /* Signature ledger visual */
+  .ledger{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:26px 24px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+  }
+  .ledger-head{
+    display:flex; justify-content:space-between; align-items:center;
+    color:var(--ink-faint);
+    font-size:0.68rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    margin-bottom:18px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--line);
+  }
+  .ledger-row{
+    display:grid;
+    grid-template-columns:20px 1fr auto;
+    gap:12px;
+    align-items:center;
+    padding:11px 0;
+    border-bottom:1px solid var(--line);
+    opacity:0;
+    animation:rowIn 0.5s ease forwards;
+  }
+  .ledger-row:last-child{border-bottom:none;}
+  .ledger-row:nth-child(2){animation-delay:0.15s;}
+  .ledger-row:nth-child(3){animation-delay:0.5s;}
+  .ledger-row:nth-child(4){animation-delay:0.85s;}
+  .ledger-row:nth-child(5){animation-delay:1.3s;}
+  @keyframes rowIn{
+    from{opacity:0; transform:translateY(4px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .dot{width:6px; height:6px; border-radius:50%; background:var(--ink-faint); justify-self:center;}
+  .dot.ok{background:var(--ok);}
+  .dot.flag{background:var(--danger);}
+  .ledger-action{color:var(--ink-dim);}
+  .ledger-status{
+    font-size:0.68rem;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+  }
+  .ledger-status.ok{color:var(--ok);}
+  .ledger-status.flag{color:var(--danger);}
+  .ledger-stamp{
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px dashed var(--line-strong);
+    display:flex; align-items:center; gap:10px;
+    opacity:0;
+    animation:rowIn 0.6s ease forwards;
+    animation-delay:1.65s;
+  }
+  .stamp-badge{
+    border:1px solid var(--danger);
+    color:var(--danger);
+    font-size:0.66rem;
+    letter-spacing:0.1em;
+    padding:4px 8px;
+    border-radius:2px;
+    transform:rotate(-3deg);
+  }
+  .ledger-stamp span{color:var(--ink-faint); font-size:0.72rem;}
+
+  /* ---------- SECTION SHELL ---------- */
+  .section{padding:108px 0;}
+  .section-alt{background:var(--bg-panel);}
+  .section-head{
+    max-width:640px;
+    margin-bottom:56px;
+  }
+  .section-head h2{
+    font-size:clamp(1.9rem, 3vw, 2.6rem);
+    margin-top:16px;
+  }
+
+  /* ---------- PROBLEM STATS ---------- */
+  .stat-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .stat-card{
+    background:var(--bg);
+    padding:32px 26px;
+  }
+  .stat-num{
+    font-family:'Fraunces', serif;
+    font-size:2.5rem;
+    color:var(--accent);
+    font-weight:500;
+  }
+  .stat-label{
+    margin-top:10px;
+    font-size:0.86rem;
+    color:var(--ink-dim);
+    line-height:1.5;
+  }
+  .source-note{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    color:var(--ink-faint);
+    margin-top:20px;
+    letter-spacing:0.01em;
+  }
+
+  /* ---------- WHY NOW TIMELINE ---------- */
+  .timeline{border-left:1px solid var(--line-strong); margin-left:6px;}
+  .tl-item{
+    position:relative;
+    padding:0 0 40px 32px;
+  }
+  .tl-item:last-child{padding-bottom:0;}
+  .tl-item::before{
+    content:"";
+    position:absolute; left:-5px; top:4px;
+    width:9px; height:9px;
+    background:var(--bg-alt, var(--bg));
+    border:1px solid var(--accent);
+    border-radius:50%;
+    background:var(--bg);
+  }
+  .section-alt .tl-item::before{background:var(--bg-panel);}
+  .tl-date{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    color:var(--accent);
+    letter-spacing:0.08em;
+    margin-bottom:6px;
+  }
+  .tl-title{
+    font-family:'Fraunces', serif;
+    font-size:1.2rem;
+    color:var(--ink);
+    margin-bottom:8px;
+  }
+  .tl-body{color:var(--ink-dim); font-size:0.94rem; max-width:60ch;}
+
+  /* ---------- THREE QUESTIONS ---------- */
+  .questions{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .q-card{
+    background:var(--bg-panel);
+    padding:34px 28px;
+    display:flex; flex-direction:column; gap:16px;
+  }
+  .q-card.answered{background:var(--bg-panel-2); border-top:2px solid var(--accent);}
+  .q-num{font-family:'IBM Plex Mono', monospace; color:var(--ink-faint); font-size:0.78rem;}
+  .q-card.answered .q-num{color:var(--accent);}
+  .q-question{font-family:'Fraunces', serif; font-size:1.28rem; color:var(--ink);}
+  .q-owner{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+  .q-desc{font-size:0.88rem; color:var(--ink-dim); flex-grow:1;}
+
+  /* ---------- PRODUCT / STEPS ---------- */
+  .steps{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:0;
+    position:relative;
+  }
+  .step{
+    padding:0 32px 0 0;
+    position:relative;
+  }
+  .step:not(:last-child)::after{
+    content:"→";
+    position:absolute;
+    right:-6px; top:8px;
+    color:var(--accent-soft);
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .step-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    color:var(--accent);
+    letter-spacing:0.08em;
+    margin-bottom:14px;
+  }
+  .step h3{font-size:1.4rem; margin-bottom:12px; color:var(--ink);}
+  .step p{font-size:0.92rem;}
+  @media (max-width:760px){
+    .steps{grid-template-columns:1fr; gap:36px;}
+    .step:not(:last-child)::after{display:none;}
+  }
+
+  .land-expand{
+    margin-top:56px;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:30px 32px;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:22px;
+    align-items:start;
+  }
+  .land-expand .tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    color:var(--accent);
+    letter-spacing:0.08em;
+    white-space:nowrap;
+    padding-top:3px;
+  }
+  .land-expand p{color:var(--ink-dim); font-size:0.94rem;}
+
+  /* ---------- POSITIONING ---------- */
+  .position-wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:64px;
+    align-items:center;
+  }
+  .quad{
+    position:relative;
+    aspect-ratio:1/1;
+    border-left:1px solid var(--line-strong);
+    border-bottom:1px solid var(--line-strong);
+    margin:20px 30px 40px 10px;
+  }
+  .quad-axis{
+    position:absolute;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.62rem;
+    color:var(--ink-faint);
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+  }
+  .axis-y{left:-14px; top:50%; transform:translateY(-50%) rotate(-90deg) translateX(50%); transform-origin:left;}
+  .axis-x{bottom:-24px; left:50%; transform:translateX(-50%);}
+  .quad-pt{
+    position:absolute;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    color:var(--ink-dim);
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+  }
+  .quad-pt .marker{width:8px; height:8px; border-radius:50%; background:var(--ink-faint);}
+  .quad-pt.self .marker{background:var(--accent); width:12px; height:12px; box-shadow:0 0 0 4px rgba(200,155,60,0.15);}
+  .quad-pt.self{color:var(--accent); font-weight:600;}
+  .quad-pt.p1{bottom:14%; left:16%;}
+  .quad-pt.p2{bottom:20%; left:70%;}
+  .quad-pt.p3{bottom:65%; left:12%;}
+  .quad-pt.p4{bottom:78%; left:78%;}
+  .position-copy p{margin-bottom:16px; font-size:0.96rem;}
+  .position-copy p:last-child{margin-bottom:0;}
+  .position-copy strong{color:var(--ink); font-weight:600;}
+  @media (max-width:820px){
+    .position-wrap{grid-template-columns:1fr;}
+  }
+
+  /* ---------- TEAM ---------- */
+  .team-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+  }
+  .team-card{background:var(--bg); padding:36px 32px;}
+  .team-name{
+    font-family:'Fraunces', serif;
+    font-size:1.5rem;
+    color:var(--ink);
+  }
+  .team-role{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:6px 0 18px;
+  }
+  .team-card ul{margin:0; padding:0; list-style:none;}
+  .team-card li{
+    font-size:0.9rem;
+    color:var(--ink-dim);
+    padding:9px 0;
+    border-top:1px solid var(--line);
+  }
+  .team-card li:first-of-type{border-top:none;}
+  @media (max-width:760px){.team-grid{grid-template-columns:1fr;}}
+
+  /* ---------- CTA / CONTACT ---------- */
+  .cta-section{
+    padding:120px 0 130px;
+    text-align:center;
+    background:
+      radial-gradient(ellipse 60% 80% at 50% 0%, rgba(200,155,60,0.09), transparent);
+  }
+  .cta-section h2{
+    font-size:clamp(2.2rem, 4vw, 3.2rem);
+    max-width:16ch;
+    margin:20px auto 22px;
+  }
+  .cta-section p{max-width:52ch; margin:0 auto 40px; font-size:1.02rem;}
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:40px 0;
+  }
+  footer .container{
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:16px;
+  }
+  footer p{font-size:0.8rem; color:var(--ink-faint);}
+  footer .foot-links{display:flex; gap:22px;}
+  footer .foot-links a{font-size:0.8rem; color:var(--ink-faint); text-decoration:none;}
+  footer .foot-links a:hover{color:var(--accent);}
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{opacity:0; transform:translateY(16px); transition:opacity 0.6s ease, transform 0.6s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:900px){
+    .hero .container{grid-template-columns:1fr; gap:48px;}
+    .stat-grid{grid-template-columns:repeat(2,1fr);}
+    .questions{grid-template-columns:1fr;}
+  }
+  @media (max-width:600px){
+    .container{padding:0 20px;}
+    .hero{padding:140px 0 72px;}
+    .section{padding:76px 0;}
+    .stat-grid{grid-template-columns:1fr 1fr;}
+    .nav-links .nav-only{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#top" class="logo"><span class="mark"></span>WARRANT</a>
+    <div class="nav-links nav-mobile-hide">
+      <a href="#problem" class="nav-only">Problem</a>
+      <a href="#product" class="nav-only">Product</a>
+      <a href="#team" class="nav-only">Team</a>
+      <a href="#contact" class="nav-cta">Get in touch</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div>
+        <div class="eyebrow">PROOF OF AUTHORITY FOR AUTONOMOUS AGENTS</div>
+        <h1>The authority record for <em>autonomous AI agents.</em></h1>
+        <p class="lede">We reconstruct every agent trajectory against the authority it was actually granted — and make that provable to a regulator, a board, or a customer.</p>
+        <div class="hero-ctas">
+          <a href="#contact" class="btn-primary">Talk to us →</a>
+          <a href="#product" class="btn-ghost">See how it works</a>
+        </div>
+      </div>
+      <div class="ledger" aria-hidden="true">
+        <div class="ledger-head"><span>Trajectory log</span><span>Live</span></div>
+        <div class="ledger-row"><span class="dot ok"></span><span class="ledger-action">agent.refund_customer($42)</span><span class="ledger-status ok">Within authority</span></div>
+        <div class="ledger-row"><span class="dot ok"></span><span class="ledger-action">agent.query_account_history()</span><span class="ledger-status ok">Within authority</span></div>
+        <div class="ledger-row"><span class="dot flag"></span><span class="ledger-action">agent.override_credit_limit()</span><span class="ledger-status flag">Authority drift</span></div>
+        <div class="ledger-row"><span class="dot ok"></span><span class="ledger-action">agent.escalate_to_human()</span><span class="ledger-status ok">Within authority</span></div>
+        <div class="ledger-stamp">
+          <span class="stamp-badge">FLAGGED</span>
+          <span>Escalated in real time · evidence attached</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section class="section" id="problem">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">01 · The problem</div>
+        <h2>Adoption is exponential. Governance isn't.</h2>
+      </div>
+      <div class="stat-grid reveal">
+        <div class="stat-card">
+          <div class="stat-num">40%</div>
+          <div class="stat-label">of enterprise applications will embed task-specific agents by end of 2026 — up from under 5% in 2025</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">144:1</div>
+          <div class="stat-label">ratio of non-human to human identities in the enterprise, growing 44% a year</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">2 in 3</div>
+          <div class="stat-label">organizations cannot tell, after the fact, whether an action was taken by a human or an agent</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">40%+</div>
+          <div class="stat-label">of agentic AI projects are at risk of cancellation by 2027 over governance and ROI gaps</div>
+        </div>
+      </div>
+      <p class="source-note reveal">Sources: Gartner 2026 enterprise agent forecasts · Identity Defined Security Alliance, 2026 · 2026 survey of 900+ security leaders</p>
+    </div>
+  </section>
+
+  <!-- WHY NOW -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">02 · Why now</div>
+        <h2>Regulators just confirmed the gap — in writing.</h2>
+      </div>
+      <div class="timeline reveal">
+        <div class="tl-item">
+          <div class="tl-date">FEB 2026</div>
+          <div class="tl-title">GARP names the structural mismatch</div>
+          <div class="tl-body">Pre-deployment validation cannot govern a system that changes after deployment — a framework problem, not an execution gap.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">FEB 2026</div>
+          <div class="tl-title">Cyber Risk Institute publishes FS AI RMF</div>
+          <div class="tl-body">230 control objectives, built with 100+ financial institutions — an industry-built answer, but a document, not a product.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">APR 2026</div>
+          <div class="tl-title">SR 26-2 replaces SR 11-7 (Fed / OCC / FDIC)</div>
+          <div class="tl-body">Generative and agentic AI explicitly excluded from scope, "with additional guidance planned." The primary US model-risk rule left agentic AI out — a supervised gap, dated and in writing.</div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-date">AUG 2026</div>
+          <div class="tl-title">EU AI Act reaches full enforcement</div>
+          <div class="tl-body">72-hour incident reporting windows begin — institutions need evidence infrastructure now.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE INSIGHT -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">03 · The insight</div>
+        <h2>Three questions per trajectory. Nobody answers all three.</h2>
+      </div>
+      <div class="questions reveal">
+        <div class="q-card">
+          <div class="q-num">01</div>
+          <div class="q-question">What happened?</div>
+          <div class="q-owner">Observability tools</div>
+          <p class="q-desc">Braintrust, Arize, Langfuse, Galileo — deep on the trace, silent on whether it should have happened at all.</p>
+        </div>
+        <div class="q-card">
+          <div class="q-num">02</div>
+          <div class="q-question">Is it allowed, on paper?</div>
+          <div class="q-owner">Compliance tools</div>
+          <p class="q-desc">Credo AI, Holistic AI, Trustible — deep on policy language, but they don't sit in the execution path.</p>
+        </div>
+        <div class="q-card answered">
+          <div class="q-num">03</div>
+          <div class="q-question">Was it authorized — and can we prove it?</div>
+          <div class="q-owner">Warrant</div>
+          <p class="q-desc">Reconstructs each trajectory against the authority the agent was actually granted. Continuous, cross-vendor, evidence-grade.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCT -->
+  <section class="section section-alt" id="product">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">04 · The product</div>
+        <h2>The authority record for autonomous agents.</h2>
+      </div>
+      <div class="steps reveal">
+        <div class="step">
+          <div class="step-tag">01 · INGEST</div>
+          <h3>Ingest</h3>
+          <p>Pull trajectories from any agent framework, orchestrator, or MCP toolchain — vendor-agnostic by design.</p>
+        </div>
+        <div class="step">
+          <div class="step-tag">02 · RECONSTRUCT</div>
+          <h3>Reconstruct</h3>
+          <p>Cross-reference each trajectory against the authority actually granted: who delegated it, what it was scoped to, what changed.</p>
+        </div>
+        <div class="step">
+          <div class="step-tag">03 · ATTEST</div>
+          <h3>Attest</h3>
+          <p>Produce tamper-evident, defensible evidence — and escalate in real time the moment a trajectory steps outside its granted authority.</p>
+        </div>
+      </div>
+      <div class="land-expand reveal">
+        <div class="tag">LAND & EXPAND</div>
+        <p>Land as the neutral evidence layer. Expand with configurable risk "lenses" — model risk, fraud, compliance, security — on top of one authority record.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- POSITIONING -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">05 · Positioning</div>
+        <h2>The open quadrant.</h2>
+      </div>
+      <div class="position-wrap reveal">
+        <div class="quad" aria-hidden="true">
+          <div class="quad-axis axis-y">Accountability & regulatory language</div>
+          <div class="quad-axis axis-x">Runtime / trajectory depth</div>
+          <div class="quad-pt p1"><span class="marker"></span>Observability tools</div>
+          <div class="quad-pt p2"><span class="marker"></span>Trajectory-security &amp; audit</div>
+          <div class="quad-pt p3"><span class="marker"></span>Compliance platforms</div>
+          <div class="quad-pt p4 self"><span class="marker"></span>Warrant</div>
+        </div>
+        <div class="position-copy">
+          <p>Trajectory-security and identity tools prove the underlying data is capturable — but each stays framed to one budget: security, or access control.</p>
+          <p>Compliance tools own the regulatory language, but never sit in the runtime.</p>
+          <p><strong>Warrant is the only one built to hold both, across every risk lens</strong> — thirty-plus vendors mapped across six clusters, and none of them answer whether a trajectory was within the authority actually granted.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="section section-alt" id="team">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="eyebrow">06 · Team</div>
+        <h2>A technical team that moved into governance.</h2>
+      </div>
+      <div class="team-grid reveal">
+        <div class="team-card">
+          <div class="team-name">Kamya</div>
+          <div class="team-role">Co-founder</div>
+          <ul>
+            <li>CS / Engineering background, hands-on coding across multiple technical projects</li>
+            <li>Cross-functional AI Risk &amp; Governance role at a global bank — spanning Model Risk, Cyber, Fraud, Compliance, Legal, Cloud and Data Governance</li>
+            <li>Final arbiter across risk horizontals, with override authority on AI risk assessments</li>
+            <li>7–8 published technical papers, including Springer Nature</li>
+          </ul>
+        </div>
+        <div class="team-card">
+          <div class="team-name">Trisha</div>
+          <div class="team-role">Co-founder</div>
+          <ul>
+            <li>CS / Engineering background; 8 years spanning hands-on coding and data science</li>
+            <li>VP at Barclays UK — Head of AI Innovation Strategy &amp; Governance for Private Banking &amp; Wealth Management</li>
+            <li>Extensively published researcher</li>
+            <li>Brings the client-facing wealth / private-banking angle, complementing cross-horizontal risk arbitration</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="contact">
+    <div class="container">
+      <div class="eyebrow" style="justify-content:center;">Get in touch</div>
+      <h2>Every enterprise deploying agents will be asked this eventually.</h2>
+      <p>Was this action authorized — and can you prove it? We're looking for early design partners in regulated financial services, and a founding engineer to help us build. If either sounds like you, we'd like to talk.</p>
+      <a href="mailto:hello@warrant.ai" class="btn-primary">hello@warrant.ai</a>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <p>© 2026 Warrant. The control plane for accountable autonomy.</p>
+    <div class="foot-links">
+      <a href="mailto:hello@warrant.ai">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add('in'));
+  }
+</script>
+
+</body>
+</html>
